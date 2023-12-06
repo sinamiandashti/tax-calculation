@@ -25,6 +25,7 @@ export class TaxService {
             const diff = newFilledOrder.amount - averageBuyPrice;
             const payableTax = diff * TAX_STRUCTURE[country].percentage;
             await this.userService.updateUserBalanceAndTax(userId, payableTax, newFilledOrder.amount);
+
         }
     }
 }
