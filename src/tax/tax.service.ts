@@ -12,7 +12,7 @@ export class TaxService {
         @Inject(UserService) private userService: UserService,
     ) {}
 
-    async calculateTax(userId: string, country: Country, orders: Order[], newFilledOrderAmount: number): Promise<void> {
+    async calculateTax(userId: string, country: Country, orders: Order[], newFilledOrder: Order): Promise<void> {
         for (const order of orders) {
             let averageBuyPrice = 0;
             let totalBuyAmount = 0;
@@ -22,9 +22,9 @@ export class TaxService {
                 }
             }
             averageBuyPrice = totalBuyAmount / orders.length;
-            const diff = newFilledOrderAmount - averageBuyPrice;
+            const diff = newFilledOrder.amount - averageBuyPrice;
             const payableTax = diff * TAX_STRUCTURE[country].percentage;
-            await this.userService.updateUserBalanceAndTax(userId, payableTax, newFilledOrderAmount);
+            await this.userService.updateUserBalanceAndTax(userId, payableTax, newFilledOrder.amount);
 
         }
     }
