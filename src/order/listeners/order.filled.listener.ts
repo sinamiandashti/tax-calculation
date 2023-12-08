@@ -1,22 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { OrderFilledEvent } from '../events/order.filled.event';
 import {Order} from "src/order/repo/order.repository";
 import Country from "src/common/constants/country";
+import {OrderFilledDto} from '../dto/order-filled.dto';
+import {OrderService} from '../order.service'
 
 @Injectable()
 export class OrderFilledListener {
+    constructor(
+        @Inject(OrderService) private orderService: OrderService,
+    ) {
+    }
     @OnEvent('order.filled')
-    handleOrderCreatedEvent(event: OrderFilledEvent) {
+    async handleOrderCreatedEvent(eventBody: OrderFilledDto) {
         // handle and process "OrderCreatedEvent" event
-        const user = await this.userService.getUser(orderFilledDto.userId);
 
-        const newOrder = await Order.find({id: orderFilledDto.id})
-        const previousOrders: Order[] = [];
-        const userCountry: Country = Country.AT; // Retrieve user country from user service -> const user = await this.userService.getUser(orderFilledDto.userId); -> find user
+        // Check validation of incoming event's body
 
-
-        this.taxService.calculateTax(user, userCountry, previousOrders, newOrder.amount)
+        await this.orderService.orderFilled(eventBody)
 
     }
 }
