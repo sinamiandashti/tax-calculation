@@ -23,8 +23,12 @@ export class TaxService {
             }
             averageBuyPrice = totalBuyAmount / orders.length;
             const diff = newFilledOrder.amount - averageBuyPrice;
-            const payableTax = diff * TAX_STRUCTURE[country].percentage;
-            await this.userService.updateUserBalanceAndTax(userId, payableTax, newFilledOrder.amount);
+            if (diff > 0) {
+                const payableTax = diff * TAX_STRUCTURE[country].percentage;
+                await this.userService.updateUserBalanceAndTax(userId, payableTax, newFilledOrder.amount);
+            } else {
+                await this.userService.updateUserBalanceAndTax(userId, 0, newFilledOrder.amount);
+            }
 
         }
     }
